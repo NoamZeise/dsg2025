@@ -6,3 +6,15 @@
   (make-instance
    'world-object
    :meshes meshes))
+
+;; ui object
+
+(defclass ui-object (fw:object)
+  ())
+
+(defun make-ui-object (rect tex)
+  (make-instance
+   'ui-object
+   :meshes (list (fw:get-asset 'quad))
+   :diffuse (list tex)
+   :model (gficl:2d-rect-matrix rect)))

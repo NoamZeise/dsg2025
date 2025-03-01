@@ -1,4 +1,4 @@
-#version 460
+#version 330
 
 layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 normal;
@@ -18,5 +18,7 @@ void main() {
   fpos = vec3(world);
   fuv = uv;
   fnorm = vec3(norm_mat * vec4(normal, 1));
-  gl_Position = projection * view * world;
+  mat4 p = projection;
+  p[1][1] = -p[1][1];
+  gl_Position = p * view * world;
 }

@@ -69,7 +69,7 @@
 (defun load-image (key filename)
   (format t "loading image ~a from ~a~%" key filename)
   (add-to-asset-table key
-    (multiple-value-bind (tex w h) (gficl/load:image filename)
+    (multiple-value-bind (tex w h) (gficl/load:image (merge-pathnames filename +asset-folder+))
       (add-asset-object tex)
       ;(pairlis '(:tex :width :height) (list tex w h))
       tex

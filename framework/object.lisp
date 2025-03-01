@@ -2,9 +2,9 @@
 
 (defclass object ()
   ((meshes :initarg :meshes)
-   (diffuse-tex :initarg :diffuse)
-   (model :type gficl:matrix)
-   (normal :type gficl:matrix)
+   (diffuse-texs :initarg :diffuse)
+   (model :type gficl:matrix :initarg :model)
+   (normal :type gficl:matrix :initform (gficl:make-matrix))
    (light? :initarg :light :initform nil :type bool)
    (colour :initarg :colour :initform (gficl:make-vec '(1 1 1 1)))))
 
@@ -34,14 +34,14 @@
   (setf (slot-value obj 'normal) (gficl:transpose-matrix (gficl:inverse-matrix model-matrix))))
 
 (defmethod draw ((obj object) shader)
-  (with-slots (meshes model normal diffuse-tex colour light?) obj
+  (with-slots (meshes model normal diffuse-texs colour light?) obj
     (shader-model-props shader (list (cons :model model)
 				     (cons :normal normal)))
     (let ((mesh-props (list (cons :colour colour)
 			    (cons :light light?))))
       (if (listp meshes)
-	  (if diffuse-tex
-	      (loop for mesh in meshes for d in diffuse-tex do
+	  (if diffuse-texs
+	      (loop for mesh in meshes for d in diffuse-texs do
 		    (progn
 		      (shader-mesh-props shader (cons (cons :diffuse d) mesh-props))
 		      (gficl:draw-vertex-data mesh)))

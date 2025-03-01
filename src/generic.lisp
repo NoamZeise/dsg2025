@@ -6,5 +6,8 @@
 (defgeneric cleanup (game))
 (defgeneric reload (game))
 
-(defconstant +world-res-w+ 400)
-(defconstant +world-res-h+ 400)
+(defconstant +world-res-w+ 200)
+(defconstant +world-res-h+ 200)
+
+(defconstant +ui-res-w+ 400)
+(defconstant +ui-res-h+ 225)

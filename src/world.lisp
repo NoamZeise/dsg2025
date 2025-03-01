@@ -13,7 +13,7 @@
   (let ((world-scene (make-instance 'world-scene)))
     (let ((wo (make-world-object (fw:get-asset 'cube))))
       (fw:resize world-scene +world-res-w+ +world-res-h+)
-      (fw:update-model wo (gficl:make-matrix))
+      (fw:update-model wo (gficl:translation-matrix '(0 0 0)))
       (with-slots (fw:colour) wo
 	(setf fw:colour (gficl:make-vec '(1 0 0 1))))
       (update-scene world-scene (list wo)))

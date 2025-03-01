@@ -22,8 +22,6 @@
   (setf *signal-fn* nil)
   (setf *game* (make-game))
   (resize-callback (gficl:window-width) (gficl:window-height))
-  (gl:enable :depth-test :cull-face)
-  (gl:front-face :cw)
   (gl:cull-face :front))
 
 (defun load-assets ()
@@ -31,14 +29,11 @@
   (fw:add-asset 'quad
 		(gficl:make-vertex-data
 		 (gficl:make-vertex-form
-		  (list (gficl:make-vertex-slot 2 :float)
-			(gficl:make-vertex-slot 2 :float)))
-		 '(((0 0) (0 0))
-		   ((1 0) (1 0))
-		   ((1 1) (1 1))
-		   ((0 1) (0 1)))
+		  (list (gficl:make-vertex-slot 2 :float)))
+		 '(((0 0)) ((1 0)) ((1 1)) ((0 1)))
 		 '(0 3 2 2 1 0)))
-  (fw:load-model 'cube #p"cube.obj"))
+  (fw:load-model 'cube #p"cube.obj")
+  (fw:load-image 'test #p"test.png"))
 
 (defun cleanup-program ()  
   (fw:cleanup-assets)
@@ -51,7 +46,7 @@
   (gficl:with-update (dt)
     (gficl:map-keys-pressed
      (:escape (glfw:set-window-should-close))
-     (:f (gficl:toggle-fullscreen t)))
+     (:f (gficl:toggle-fullscreen)))
     (update *game* dt)
     (cond (*signal-fn*
 	   (funcall *signal-fn*)

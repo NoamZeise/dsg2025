@@ -25,7 +25,7 @@
 (defmethod draw ((scene scene) shader)
   (shader-scene-props shader scene)
   (loop for o in (slot-value scene 'objects) do (draw o shader)))
-o
+
 ;;; 3d camera scene
 
 (defclass scene-3d (scene)

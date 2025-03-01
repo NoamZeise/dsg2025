@@ -1,4 +1,4 @@
-#version 460
+#version 330
 
 in vec3 fpos;
 in vec3 fnorm;

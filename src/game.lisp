@@ -6,14 +6,18 @@
    (ui :initarg :ui)))
 
 (defun make-game ()
-  (create-pipelines
-   (create-scenes
+  (create-scenes
+   (create-pipelines
     (make-instance
      'game))))
 
 (defun create-scenes (game)
   (setf (slot-value game 'world) (make-world))
-  (setf (slot-value game 'ui) (make-ui))
+  (setf (slot-value game 'ui)
+	(make-ui
+	 (fw:get-pass-texture (fw:get-pass
+			       (slot-value game 'pipeline)
+			       :world))))
   game)
 
 (defun create-pipelines (game)
@@ -31,11 +35,12 @@
   (fw:reload (slot-value game 'pipeline)))
 
 (defmethod update ((game game) dt)
-  (with-slots (world) game
-    (update world dt)))
+  (with-slots (world ui) game
+    (update world dt)
+    (update ui dt)))
 
 (defmethod resize ((game game) w h)
-  (with-slots (pipeline world) game
+  (with-slots (pipeline ui) game
     (fw:resize pipeline w h)))
 
 (defmethod draw ((game game))
