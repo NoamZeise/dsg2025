@@ -19,5 +19,6 @@
 		 (:file "pipeline")
 		 (:file "object")
 		 (:file "game")
+		 (:file "map")
 		 (:file "world")
 		 (:file "ui")))))

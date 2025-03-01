@@ -5,7 +5,8 @@
 (defun make-world-object (meshes)
   (make-instance
    'world-object
-   :meshes meshes))
+   :meshes meshes
+   :diffuse nil))
 
 ;; ui object
 

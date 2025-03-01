@@ -33,7 +33,11 @@
 		 '(((0 0)) ((1 0)) ((1 1)) ((0 1)))
 		 '(0 3 2 2 1 0)))
   (fw:load-model 'cube #p"cube.obj")
-  (fw:load-image 'test #p"test.png"))
+  (fw:load-image 'test #p"test.png")
+  (fw:load-model 'plain #p"tiles/plain.obj")
+  (fw:load-model 'depot #p"tiles/depot.obj")
+  (fw:load-model 'boulders #p"tiles/boulders.obj")
+  (fw:load-model 'camp #p"tiles/camp.obj"))
 
 (defun cleanup-program ()  
   (fw:cleanup-assets)

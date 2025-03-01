@@ -11,3 +11,10 @@
 
 (defconstant +ui-res-w+ 400)
 (defconstant +ui-res-h+ 225)
+
+
+(defparameter *world-map*
+  '((:camp     :boulders :boulders :plain     :boulders)
+    (:plain    :plain    :depot    :plain     :boulders)
+    (:boulders :boulders :start    :plain     :boulders)
+    (:boulders :plain    :depot    :boulders  :boulders)))

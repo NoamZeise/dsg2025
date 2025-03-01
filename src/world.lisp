@@ -2,27 +2,44 @@
 
 (defclass world (game-scene)
   ((pos :initform (gficl:make-vec '(-20 5 0)))
-   (dir :initform (gficl:make-vec '(1 -0.2 0)))))
+   (dir :initform (gficl:make-vec '(1 -0.2 0)))
+   (map :initarg :map)))
 
 (defun make-world ()
-  (make-instance
-   'world
-   :scene (make-world-scene)))
+  (setup-world-scene
+   (make-instance
+    'world
+    :scene (make-world-scene)
+    :map (make-map (make-world-tiles)))))
 
 (defun make-world-scene ()
   (let ((world-scene (make-instance 'world-scene)))
-    (let ((wo (make-world-object (fw:get-asset 'cube))))
-      (fw:resize world-scene +world-res-w+ +world-res-h+)
-      (fw:update-model wo (gficl:translation-matrix '(0 0 0)))
-      (with-slots (fw:colour) wo
-	(setf fw:colour (gficl:make-vec '(1 0 0 1))))
-      (update-scene world-scene (list wo)))
+    (fw:resize world-scene +world-res-w+ +world-res-h+)
     world-scene))
 
+(defun make-world-tiles ()
+  (list (cons :plain `(make-world-object (fw:get-asset 'plain)))
+	(cons :start `(make-world-object (fw:get-asset 'plain)))
+	(cons :depot `(make-world-object (fw:get-asset 'depot)))
+	(cons :boulders `(make-world-object (fw:get-asset 'boulders)))
+	(cons :camp `(make-world-object (fw:get-asset 'camp)))))
+
+(defun setup-world-scene (world)
+  (with-slots (scene map pos dir) world
+    (update-scene
+     scene
+     (loop for row in (tiles map) nconcing
+	   (loop for tile in row collecting
+		 (obj tile))))
+    (with-slots ((map-pos pos)) map
+      (setf pos (map-to-world map-pos 4))
+      (setf dir (gficl:make-vec '(0 0 1)))))
+  world)
+
 (defmethod update ((world world) dt)
-  (with-slots (pos dir scene) world     
-    (cam-controls world dt)
-    (update-scene-cam scene pos dir)))
+	   (with-slots (pos dir scene) world     
+	     (cam-controls world dt)
+	     (update-scene-cam scene pos dir)))
 
 ;;; Camera Movement
 
