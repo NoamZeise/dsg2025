@@ -14,6 +14,10 @@
 		:components
 		((:file "package")
 		 (:file "main")
-		 (:file "pipeline")
+		 (:file "generic")
 		 (:file "scene")
-		 (:file "object")))))
+		 (:file "pipeline")
+		 (:file "object")
+		 (:file "game")
+		 (:file "world")
+		 (:file "ui")))))

@@ -12,16 +12,15 @@
     :height 600)
    (setup)
    (loop until (gficl:closedp)
-	 do (update)
+	 do (update-step)
 	 do (render))
-   (cleanup)))
+   (cleanup-program)))
 
 (defun setup ()
   (fw:init-watched)
   (load-assets)
   (setf *signal-fn* nil)
-  (create-pipelines)
-  (create-scenes)
+  (setf *game* (make-game))
   (resize-callback (gficl:window-width) (gficl:window-height))
   (gl:enable :depth-test :cull-face)
   (gl:front-face :cw)
@@ -41,48 +40,29 @@
 		 '(0 3 2 2 1 0)))
   (fw:load-model 'cube #p"cube.obj"))
 
-(defun create-pipelines ()
-  (setf *main-pipeline* (make-main-pipeline)))
-
-(defun cleanup-pipelines ()
-  (fw:free *main-pipeline*))
-
-(defun create-scenes ()
-  (setf *world-scene* (make-instance 'world-scene))
-  (let ((wo (make-world-object (fw:get-asset 'cube))))
-    (fw:update-model wo (gficl:make-matrix))
-    (with-slots (fw:colour) wo
-      (setf fw:colour (gficl:make-vec '(1 0 0 1))))
-    (update-scene *world-scene* (list wo)))
-  (update-scene-cam
-   *world-scene*
-   (gficl:make-vec '(-20 8 5))
-   (gficl:make-vec '(0 0 0))))
-
-(defun cleanup ()  
+(defun cleanup-program ()  
   (fw:cleanup-assets)
-  (cleanup-pipelines))
+  (cleanup *game*))
 
 (defun resize-callback (w h)
-  (fw:resize *main-pipeline* w h)
-  (fw:resize *world-scene* w h))
+  (resize *game* w h))
 
-(defun update ()
+(defun update-step ()
   (gficl:with-update (dt)
     (gficl:map-keys-pressed
      (:escape (glfw:set-window-should-close))
      (:f (gficl:toggle-fullscreen t)))
-    
+    (update *game* dt)
     (cond (*signal-fn*
 	   (funcall *signal-fn*)
 	   (setf *signal-fn* nil)))
     (cond ((fw:process-watched)
-	   (fw:reload *main-pipeline*)
+	   (reload *game*)
 	   (fw:set-all-unmodified)))))
 
 (defun render ()
   (gficl:with-render
-   (fw:draw *main-pipeline* (list (cons :world (list *world-scene*))))))
+   (draw *game*)))
 
 ;;; Signal Functions
 
@@ -101,15 +81,13 @@
   `(signal-fn-lambda (function (lambda () ,@body))))
 
 (defun signal-recreate-scenes ()
-  (signal-fn (create-scenes)))
+  (signal-fn (create-scenes *game*)))
 
 (defun signal-recreate-pipelines ()
-  (signal-fn (cleanup-pipelines) (create-pipelines)))
+  (signal-fn (cleanup-pipelines *game*) (create-pipelines *game*)))
 
 ;;; Global Variables
 
-(defparameter *main-pipeline* nil)
-
-(defparameter *world-scene* nil)
+(defparameter *game* nil)
 
 (defparameter *signal-fn* nil)
