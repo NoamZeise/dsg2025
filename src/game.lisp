@@ -41,7 +41,8 @@
     (update ui dt)
     (set-compass-dir ui (+ (* 0.3 (noisy:noise (* time 0.5))) -0.15 0.25 (/ (player-dir world) -4.0)))
     (set-sledgemeter ui (sledgemeter world))
-    (print (sledgemeter world))
+    (if (won world)
+	(print :won))
     (if (> (sledgemeter world) (* *tiles-to-travel* 20))
 	(print :dead))))
 
