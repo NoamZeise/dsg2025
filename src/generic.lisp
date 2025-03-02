@@ -14,29 +14,33 @@
 
 (defconstant +base-player-height+ 5.0)
 
-(defparameter *tiles-to-travel* 17)
+(defparameter *tiles-to-travel* 28.2)
+
+(defparameter *time-to-end* 4)
 
 (defparameter
  *map-layout*
- '((:b :b :b :b :b :b :b :b :b)
-   (:b :s :b :p :p :p :p :p :b)
-   (:b :p :b :d :p :p :p :p :b)
-   (:b :p :p :r :r :p :p :p :b)
-   (:b :b :b :b :p :p :p :p :b)
-   (:b :p :p :p :p :p :p :p :b)
-   (:b :b :b :p :p :p :p :p :b)
-   (:b :c :r :r :p :p :p :p :b)
-   (:b :b :b :b :b :b :b :b :b)))
+ '((:x :b :b :b :b :b :b :b :x)
+   (:x :b :o :r :o :o :r :b :b)
+   (:x :b :b :o :o :o :o :o :b)
+   (:b :b :d :b :c :b :o :r :b)
+   (:b :o :o :o :b :o :o :o :b)
+   (:b :o :o :o :b :o :d :b :b)
+   (:b :r :b :r :o :o :r :r :b)
+   (:b :o :o :o :b :o :o :b :b)
+   (:b :b :b :o :o :b :o :d :b)
+   (:x :b :b :o :d :o :r :o :b)
+   (:x :b :o :b :o :o :o :b :b)
+   (:b :b :o :o :r :o :o :o :b)
+   (:b :d :r :o :b :o :r :b :b)
+   (:b :b :o :o :o :o :b :b :x)
+   (:x :b :b :b :o :r :b :b :x)
+   (:b :b :b :o :d :o :o :b :x)
+   (:b :s :o :b :o :o :b :b :x)
+   (:b :o :o :r :r :b :b :x :x)
+   (:x :b :b :b :b :b :x :x :x)))
 
-(defparameter
- *world-map*
- '(
-   (:boulders :boulders :boulders :boulders :boulders :boulders)
-   (:boulders :camp     :boulders :boulders :boulders     :boulders)
-   (:boulders :plain    :plain    :depot    :plain     :boulders)
-   (:boulders :boulders :start    :pressure  :boulders :boulders)
-   (:boulders :plain    :plain    :plain    :plain :boulders)
-   (:boulders :boulders    :boulders    :boulders  :boulders)))
+(defparameter *world-map* nil)
 
 (defun midpoint (rect)
   (destructuring-bind

@@ -14,11 +14,12 @@
 	      (loop for tile in row collecting
 		    (ecase tile
 			   (:b :boulders)
-			   (:p :plain)
+			   (:o :plain)
 			   (:r :pressure)
 			   (:s :start)
 			   (:c :camp)
-			   (:d :depot)))))
+			   (:d :depot)
+			   (:x :blank)))))
   
   (multiple-value-bind
    (tiles start) (make-tiles tile-objs)
@@ -56,15 +57,19 @@
   (let ((start '(0 0)))
     (values
      (loop for y from 0 for row in *world-map* collecting
-	   (loop for x from 0 for tile in row collecting
-		 (progn
-		   (if (equalp tile :start)
-		       (setf start (cons x y)))
-		   (make-instance
-		    'tile
-		    :obj (make-tile-obj
-			  (eval (get-tile-expr tile tile-objs)) x y)
-		    :pos (cons x y)))))
+	   (remove-if-not
+	    #'(lambda (x) x)
+	    (loop for x from 0 for tile in row collecting
+		  (progn
+		    (if (equalp tile :start)
+			(setf start (cons x y)))
+		    (if (not (equalp tile :blank))
+			(make-instance
+			 'tile
+			 :obj (make-tile-obj
+			       (eval (get-tile-expr tile tile-objs)) x y)
+			 :pos (cons x y))
+		      nil)))))
      start)))
 
 (defun get-tile-expr (tile tile-objs)
@@ -73,6 +78,7 @@
     (cdr tile-al)))
 
 (defun make-tile-obj (game-obj x y)
+  (setf (mid game-obj) (gficl:make-vec (list (* x 20.0) (* y 20.0))))
   (fw:update-model
    game-obj
    (gficl:translation-matrix (map-to-world (cons x y))))

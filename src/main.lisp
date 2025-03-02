@@ -35,11 +35,12 @@
 
   (fw:load-image 'background "background.png")
   (fw:load-image 'overlay "frost-overlay.png")
+  (fw:load-image 'win "win-screen.png")
+  (fw:load-image 'lose "lose-screen.png")
   (fw:load-image 'hood "hood-overlay.png")
   (fw:load-image 'compass-bg "compass-bg.png")
   (fw:load-image 'compass-point "compass-point.png")
   (fw:load-image 'sledgemeter "sledgemeter.png")
-  (fw:load-image 'sledgemeter "snow.png")
   
   (fw:load-model 'plain #p"tiles/plain.obj")
   (fw:load-model 'depot #p"tiles/depot.obj")

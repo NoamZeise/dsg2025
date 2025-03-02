@@ -4,7 +4,8 @@
   ((pipeline :initarg :pipeline)
    (world :initarg :world)
    (ui :initarg :ui)
-   (time :initform 0.0)))
+   (time :initform 0.0)
+   (finished :initform nil)))
 
 (defun make-game ()
   (create-scenes
@@ -35,23 +36,23 @@
   (fw:reload (slot-value game 'pipeline)))
 
 (defmethod update ((game game) dt)
-  (with-slots (world ui time) game
+  (with-slots (world ui time finished) game
     (setf time (+ time dt))
     (update world dt)
     (update ui dt)
-    (set-compass-dir ui (+ (* 0.3 (noisy:noise (* time 0.5))) -0.15 0.25 (/ (player-dir world) -4.0)))
+    (let ((sz (if finished 0.1 0.3)))
+      (set-compass-dir ui (+ (* sz (noisy:noise (* time 0.5))) (/ sz -2) 0.25 (/ (player-dir world) -4.0))))
     (set-sledgemeter ui (sledgemeter world))
-    (if (won world)
-	(print :won))
-    (if (> (sledgemeter world) (* *tiles-to-travel* 20))
-	(print :dead))))
+    (cond ((and (not finished) (or (lost world) (won world)))
+	   (setf finished t)
+	   (game-over ui (if (won world) :win :loss))))))
 
 (defmethod resize ((game game) w h)
-  (with-slots (pipeline ui) game
-    (fw:resize pipeline w h)))
+	   (with-slots (pipeline ui) game
+	     (fw:resize pipeline w h)))
 
 (defmethod draw ((game game))
-  (with-slots (pipeline world ui) game
+  (with-slots (pipeline world ui) game    
     (fw:draw
      pipeline
      (list (cons :world (list (scene world)))

@@ -4,17 +4,23 @@
   ((pos :initform (gficl:make-vec (list -20 +base-player-height+ 0)))
    (dir :initform (gficl:make-vec '(1 -0.22 0)))
    (base-dir :initform (gficl:make-vec '(1 -0.22 0)))
-   (current-rot :initform 0 :accessor player-dir)
-   (target-rot :initform 0)
+   (current-rot :initform 3 :accessor player-dir)
+   (target-rot :initform 3)
    (target-pos)
    (map :initarg :map)
    (time :initform 0.0)
    (moving :initform nil)
-   (sledgemeter :initform 0.0 :accessor sledgemeter)
+   (sledgemeter :initform (* 0.0 20) :accessor sledgemeter)
    (reset-sledgemeter :initform nil)
    (in-pressure :initform nil)
    (reached-goal :initform nil)
    (won :initform nil :accessor won)))
+
+(defun lost (world)
+  (> (sledgemeter world) (* *tiles-to-travel* 20)))
+
+(defun over (world)
+  (or (lost world) (won world)))
 
 (defun make-world ()
   (setup-world-scene
@@ -56,7 +62,7 @@
 	   reached-goal won)
       world
     ;;(debug-cam-controls world dt)
-    (cond ((not moving)
+    (cond ((and (not moving) (not (over world)))
 	   (if reset-sledgemeter
 	       (setf sledgemeter 0))
 	   (setf reset-sledgemeter nil)
@@ -68,7 +74,9 @@
     (update-world-cam world dt)
     (with-slots ((scene-time time)) scene
       (setf scene-time time))
-    (update-scene-cam scene pos dir)))
+    (update-scene-cam scene pos dir)
+    ;;(print pos)
+    (update-player-pos scene pos)))
 
 ;;; Camera Movement
 
@@ -95,42 +103,45 @@
 		     (:camp (setf reached-goal t)))))))))
 
 (defun update-world-cam (world dt)
-  (with-slots (pos target-pos dir base-dir current-rot target-rot time moving sledgemeter in-pressure) world
-    (cond ((rot-in-range world)
-	   (setf moving t)
-	   (setf current-rot (+ current-rot
-				(* (signum (- target-rot current-rot))
-				   (* (noisy:noise (+ (* time 0.3) -1000.0))
-				      dt))))))
-    (setf dir (gficl:quat-conjugate-vec
-	       (gficl:make-unit-quat (* (/ pi 4) current-rot)
-				     fw:+world-up+)
-	       base-dir))
-    (setf (gficl:vec-ref pos 1)
-	  (+ +base-player-height+
-	     (- (* 0.5 (noisy:noise (+ (* time 0.3) 100.0)))
-		0.25)
-	     (* (sin (* time 2)) 0.05)))
-    (setf (gficl:vec-ref target-pos 1) (gficl:vec-ref pos 1))
-    (let* ((dir (gficl:-vec target-pos pos))
-	   (len (gficl:magnitude dir))
-	   (rock 0.1)
-	   (rock-speed 0.3))
-      (cond ((> len 0.1)
+  (let ((over (over world)))
+    (with-slots (pos target-pos dir base-dir current-rot target-rot time moving sledgemeter in-pressure) world
+      (cond ((and (not over) (rot-in-range world))
 	     (setf moving t)
-	     (setf dir (gficl:*vec (/ 1 len) dir))
-	     (let ((dist (* (noisy:noise
-			     (+ 14.8 (* time 0.1)))
-			    (* 14 dt))))
-	       (setf rock 0.4)
-	       (setf rock-speed 0.7)
-	       (setf sledgemeter (+ sledgemeter (* dist (if in-pressure 2.0 1.0))))
-	       (setf pos
-		     (gficl:+vec pos
-				 (gficl:*vec dist dir))))))
-      (setf (gficl:vec-ref base-dir 1)
-	    (+ -0.22 (- (* rock (noisy:noise (+ (* time rock-speed) 1260.0)))
-			(/ rock 2)))))))
+	     (setf current-rot (+ current-rot
+				  (* (signum (- target-rot current-rot))
+				     (* (noisy:noise (+ (* time 0.3) -1000.0))
+					dt))))))
+      (setf dir (gficl:quat-conjugate-vec
+		 (gficl:make-unit-quat (* (/ pi 4) current-rot)
+				       fw:+world-up+)
+		 base-dir))
+      (if (not over)
+	  (setf (gficl:vec-ref pos 1)
+		(+ +base-player-height+
+		   (- (* 0.5 (noisy:noise (+ (* time 0.3) 100.0)))
+		      0.25)
+		   (* (sin (* time 2)) 0.05))))
+      (setf (gficl:vec-ref target-pos 1) (gficl:vec-ref pos 1))
+      (let* ((dir (gficl:-vec target-pos pos))
+	     (len (gficl:magnitude dir))
+	     (rock 0.1)
+	     (rock-speed 0.3))
+	(cond ((and (not over) (> len 0.1))
+	       (setf moving t)
+	       (setf dir (gficl:*vec (/ 1 len) dir))
+	       (let ((dist (* (noisy:noise
+			       (+ 14.8 (* time 0.1)))
+			      (* 14 dt))))
+		 (setf rock 0.4)
+		 (setf rock-speed 0.7)
+		 (setf sledgemeter (+ sledgemeter (* dist (if in-pressure 2.0 1.0))))
+		 (setf pos
+		       (gficl:+vec pos
+				   (gficl:*vec dist dir))))))
+	(if (not over)
+	    (setf (gficl:vec-ref base-dir 1)
+		  (+ -0.22 (- (* rock (noisy:noise (+ (* time rock-speed) 1260.0)))
+			      (/ rock 2)))))))))
 
 (defun debug-cam-controls (world dt)
   (with-slots (pos dir) world
