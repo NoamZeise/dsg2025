@@ -9,7 +9,7 @@
   :build-operation "deploy-op"
   :build-pathname "dsg2025"
   :entry-point "dsg2025:program"
-  :depends-on (:framework)
+  :depends-on (:framework :noisy)
   :components ((:module "src"
 		:components
 		((:file "package")

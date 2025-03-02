@@ -14,7 +14,7 @@
 ;;; World Scene
 
 (defclass world-scene (fw:scene)
-  ())
+  ((time :initform 0.0)))
 
 (defmethod fw:resize ((s world-scene) w h)
   (call-next-method)

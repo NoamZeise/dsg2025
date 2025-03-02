@@ -9,14 +9,16 @@
 
 (defmethod fw:draw ((s world-shader) scene)
   (gl:enable :depth-test :cull-face)
+  (gl:disable :blend)
   (gl:front-face :ccw)
   (call-next-method))
 
 (defmethod fw:shader-scene-props ((s world-shader) (scene world-scene))
   (with-slots (fw:shader) s
-    (with-slots (fw:view fw:projection) scene
+    (with-slots (fw:view fw:projection time) scene
       (gficl:bind-matrix fw:shader "view" fw:view)
-      (gficl:bind-matrix fw:shader "projection" fw:projection))))
+      (gficl:bind-matrix fw:shader "projection" fw:projection)
+      (gl:uniformf (gficl:shader-loc fw:shader "time") time))))
 
 (defmethod fw:shader-mesh-props ((s world-shader) props)
   (with-slots (fw:shader) s

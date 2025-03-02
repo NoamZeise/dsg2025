@@ -12,9 +12,34 @@
 (defconstant +ui-res-w+ 400)
 (defconstant +ui-res-h+ 225)
 
+(defconstant +base-player-height+ 5.0)
 
-(defparameter *world-map*
-  '((:camp     :boulders :boulders :plain     :boulders)
-    (:plain    :plain    :depot    :plain     :boulders)
-    (:boulders :boulders :start    :plain     :boulders)
-    (:boulders :plain    :depot    :boulders  :boulders)))
+(defparameter *tiles-to-travel* 17)
+
+(defparameter
+ *map-layout*
+ '((:b :b :b :b :b :b :b :b :b)
+   (:b :p :p :p :p :p :p :p :b)
+   (:b :p :p :p :p :p :p :p :b)
+   (:b :p :p :s :p :p :p :p :b)
+   (:b :p :p :r :d :p :p :p :b)
+   (:b :p :p :p :p :p :p :p :b)
+   (:b :p :p :p :p :p :p :p :b)
+   (:b :p :p :p :c :p :p :p :b)
+   (:b :b :b :b :b :b :b :b :b)))
+
+(defparameter
+ *world-map*
+ '(
+   (:boulders :boulders :boulders :boulders :boulders :boulders)
+   (:boulders :camp     :boulders :boulders :boulders     :boulders)
+   (:boulders :plain    :plain    :depot    :plain     :boulders)
+   (:boulders :boulders :start    :pressure  :boulders :boulders)
+   (:boulders :plain    :plain    :plain    :plain :boulders)
+   (:boulders :boulders    :boulders    :boulders  :boulders)))
+
+(defun midpoint (rect)
+  (destructuring-bind
+   (x y w h) (gficl:vec-data rect)
+   (gficl:make-vec (list (/ w 2)
+			 (/ h 2)))))
