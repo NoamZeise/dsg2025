@@ -39,11 +39,13 @@
   (fw:load-image 'compass-bg "compass-bg.png")
   (fw:load-image 'compass-point "compass-point.png")
   (fw:load-image 'sledgemeter "sledgemeter.png")
+  (fw:load-image 'sledgemeter "snow.png")
   
   (fw:load-model 'plain #p"tiles/plain.obj")
   (fw:load-model 'depot #p"tiles/depot.obj")
   (fw:load-model 'boulders #p"tiles/boulders.obj")
   (fw:load-model 'pressure #p"tiles/pressure.obj")
+  (fw:load-model 'start #p"tiles/start.obj")
   (fw:load-model 'camp #p"tiles/camp.obj"))
 
 (defun cleanup-program ()  

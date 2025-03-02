@@ -19,13 +19,13 @@
 (defparameter
  *map-layout*
  '((:b :b :b :b :b :b :b :b :b)
+   (:b :s :b :p :p :p :p :p :b)
+   (:b :p :b :d :p :p :p :p :b)
+   (:b :p :p :r :r :p :p :p :b)
+   (:b :b :b :b :p :p :p :p :b)
    (:b :p :p :p :p :p :p :p :b)
-   (:b :p :p :p :p :p :p :p :b)
-   (:b :p :p :s :p :p :p :p :b)
-   (:b :p :p :r :d :p :p :p :b)
-   (:b :p :p :p :p :p :p :p :b)
-   (:b :p :p :p :p :p :p :p :b)
-   (:b :p :p :p :c :p :p :p :b)
+   (:b :b :b :p :p :p :p :p :b)
+   (:b :c :r :r :p :p :p :p :b)
    (:b :b :b :b :b :b :b :b :b)))
 
 (defparameter

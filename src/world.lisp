@@ -30,7 +30,7 @@
 
 (defun make-world-tiles ()
   (list (cons :plain `(make-world-object (fw:get-asset 'plain)))
-	(cons :start `(make-world-object (fw:get-asset 'plain)))
+	(cons :start `(make-world-object (fw:get-asset 'start)))
 	(cons :depot `(make-world-object (fw:get-asset 'depot)))
 	(cons :pressure `(make-world-object (fw:get-asset 'pressure)))
 	(cons :boulders `(make-world-object (fw:get-asset 'boulders)))
